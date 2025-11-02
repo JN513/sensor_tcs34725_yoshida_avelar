@@ -1,0 +1,51 @@
+# ============================================
+# BitDogLab / EA801 Template — .gitignore
+# --------------------------------------------
+# Este arquivo define os padrões de arquivos
+# e diretórios que NÃO devem ser versionados
+# pelo Git. Ele mantém o repositório limpo,
+# leve e portável entre diferentes ambientes.
+#
+# Objetivo:
+# - Evitar envio de binários (.o, .uf2)
+# - Ignorar arquivos temporários e caches
+# - Descartar configurações locais de IDEs
+# ============================================
+
+# === PYTHON / MICROPYTHON ===
+# Arquivos de cache, ambientes virtuais e logs
+__pycache__/
+*.pyc
+*.pyo
+*.mpy
+.venv/
+env/
+.vscode/
+.idea/
+*.log
+*.tmp
+
+# === C / CMAKE ===
+# Diretórios de build e artefatos de compilação
+build/
+cmake-build*/
+*.o
+*.elf
+*.bin
+*.uf2
+*.map
+
+# === SISTEMA OPERACIONAL ===
+# Arquivos temporários e metadados do SO
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === DOCUMENTAÇÃO TEMPORÁRIA ===
+# Backups e versões intermediárias
+*.bak
+*.old
+*.aux
+*.toc
+*.out
+*.pdf~
