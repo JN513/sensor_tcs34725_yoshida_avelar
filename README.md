@@ -11,8 +11,8 @@
 - Faixa de medição / resolução:
 - Datasheet (URL):
 
-## 2. Ligações na BitDogLab
-- Pinos usados:
+## 2. Conexões de hardware
+- Tabela indicando as conexõesd entre BitDogLab e sensor:
 - Observações (resistores, alimentação externa, níveis lógicos):
 
 **Esquema de ligação (imagem em `docs/`):**  
