@@ -33,12 +33,12 @@
 - Tabela indicando as conexões entre BitDogLab e sensor:
 - Observações (resistores, alimentação externa, níveis lógicos):
 
-| Pino Sensor | GPIO  | Função   | Observação |
-| ----------- | ----- | -------- | ---------- |
-| GND         | GND   |  GND     |            |
-| VCC         | 3.3V  |  VCC     |            |
-| SDA         | GPIO0 | I2C0 SDA |            |
-| SDL         | GPIO1 | I2C0 SDL |            |
+| Pino Sensor | GPIO  | Função      | Observação         |
+| ----------- | ----- | ----------- | ------------------ |
+| GND         | GND   | Terra Comum |      ---           |
+| VCC         | 3.3V  | Alimentação | Compatível 3.3V–5V |
+| SDA         | GPIO0 | I2C0 SDA    | Pino de dados      |
+| SDL         | GPIO1 | I2C0 SDL    | Pino de clock      |
 
 ## 3. Dependências
 
