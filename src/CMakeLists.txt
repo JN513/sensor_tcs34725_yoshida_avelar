@@ -9,10 +9,11 @@ pico_sdk_init()
 add_executable(main
     main.c
     color_sensor.c
+    led.c
     )
 
 # pull in common dependencies
-target_link_libraries(main pico_stdlib hardware_i2c)
+target_link_libraries(main pico_stdlib hardware_i2c hardware_pwm)
 
 pico_enable_stdio_usb(main 1)
 
