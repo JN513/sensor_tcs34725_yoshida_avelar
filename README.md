@@ -33,8 +33,12 @@
 - Tabela indicando as conexões entre BitDogLab e sensor:
 - Observações (resistores, alimentação externa, níveis lógicos):
 
-**Tabela de conexões (imagem em `docs/`):**  
-![conexoes](docs/conexoes.jpg)
+| Pino Sensor | GPIO | Função  | Observação |
+| ----------- | ---- | ------- | ---------- |
+| GND         | GND  |  GND    |            |
+| VCC         | 3.3V |  VCC    |            |
+| SDA         | GPIO | I2C SDA |            |
+| SDL         | GPIO | I2C SDL |            |
 
 ## 3. Dependências
 - MicroPython/C versão:
