@@ -1,15 +1,33 @@
-# <NOME DO SENSOR> — Sensores na BitDogLab
+# GY-33 TCS34725 — Sensores na BitDogLab
 
-**Dupla:** Nome A (RA / @usuario), Nome B (RA / @usuario)  
-**Turma:** EA801 — 2025S2  
-**Repositório:** (URL deste repo)
+**Dupla:** Ana Beatriz Barbosa Yoshida (245609 / @beatrizbarbosay), Julio Nunes Avelar (241163 / @JN513)  
+**Turma:** EA701 — 2025S2  
+**Repositório:** [https://github.com/JN513/sensor_tcs34725_yoshida_avelar](https://github.com/JN513/sensor_tcs34725_yoshida_avelar)
 
 ## 1. Descrição do sensor
-- Fabricante / modelo:
-- Princípio de funcionamento:
-- Tensão/consumo típicos:
-- Faixa de medição / resolução:
-- Datasheet (URL):
+
+- **Fabricante / modelo:**  
+  ams AG — Sensor TCS34725  
+  Módulo: GY-33 TCS34725 (placa breakout com regulador e interface I²C)
+
+- **Princípio de funcionamento:**  
+  Sensor óptico RGB com conversor analógico-digital (ADC) de 16 bits.  
+  Possui fotodiodos com filtros para vermelho, verde, azul e claro (clear), além de filtro de bloqueio de infravermelho (IR).  
+  Mede a intensidade de luz refletida/incidente e envia os valores digitais via comunicação I²C.
+
+- **Tensão / consumo típicos:**  
+  - Alimentação: 3,3 V a 5 V (compatível com ambas as tensões)  
+  - Corrente típica: ~330 µA @ 3 V (sem LED ativo)  
+  - Interface: I²C (endereçamento padrão 0x29)
+
+- **Faixa de medição / resolução:**  
+  - Resolução: 16 bits por canal (R, G, B e Clear)  
+  - Tempo de integração ajustável: 2,4 ms a 700 ms  
+  - Faixa dinâmica: até aproximadamente 3.800.000:1 (dependendo do ganho e tempo de integração)
+
+- **Datasheet (URL):**  
+  [https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf](https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf)
+
 
 ## 2. Conexões de hardware
 - Tabela indicando as conexões entre BitDogLab e sensor:
@@ -49,7 +67,7 @@
 > - [ ] Testes em `test/` com instruções  
 > - [ ] `relatorio.md` com lições aprendidas
 
-## 📁 7. Estrutura do Repositório
+##  8. Estrutura do Repositório
 
 O projeto segue o padrão definido pela disciplina EA801 — Sistemas Embarcados, 
 visando padronizar as entregas e facilitar o reuso dos códigos e documentação.
