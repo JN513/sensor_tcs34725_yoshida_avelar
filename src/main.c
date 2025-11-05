@@ -44,29 +44,59 @@ void detectar_cor(uint8_t r, uint8_t g, uint8_t b) {
         printf("COR DETECTADA: PRETO\n");
         return;
     }
-    if (s < 0.2f) {
-        if (v > 0.8f)
+    if (s < 0.15f) {
+        if (v > 0.8f) {
             printf("COR DETECTADA: BRANCO\n");
-        else
+            led_set_color(255, 255, 255);
+        } else {
             printf("COR DETECTADA: CINZA\n");
+            led_set_color(128, 128, 128);
+        }
         return;
     }
 
     // Classificação por faixa de matiz (Hue)
-    if (h < 15 || h >= 345)
+    if (h < 10 || h >= 350) {
         printf("COR DETECTADA: VERMELHO\n");
-    else if (h < 45)
+        led_set_color(255, 0, 0);
+    } else if (h < 25) {
         printf("COR DETECTADA: LARANJA\n");
-    else if (h < 70)
+        led_set_color(255, 128, 0);
+    } else if (h < 40) {
+        printf("COR DETECTADA: ÂMBAR\n");
+        led_set_color(255, 191, 0);
+    } else if (h < 65) {
         printf("COR DETECTADA: AMARELO\n");
-    else if (h < 160)
+        led_set_color(255, 255, 0);
+    } else if (h < 85) {
+        printf("COR DETECTADA: VERDE-LIMÃO\n");
+        led_set_color(173, 255, 47);
+    } else if (h < 150) {
         printf("COR DETECTADA: VERDE\n");
-    else if (h < 260)
+        led_set_color(0, 255, 0);
+    } else if (h < 180) {
+        printf("COR DETECTADA: VERDE-ÁGUA\n");
+        led_set_color(0, 255, 128);
+    } else if (h < 210) {
+        printf("COR DETECTADA: CIANO\n");
+        led_set_color(0, 255, 255);
+    } else if (h < 250) {
         printf("COR DETECTADA: AZUL\n");
-    else if (h < 320)
+        led_set_color(0, 0, 255);
+    } else if (h < 280) {
+        printf("COR DETECTADA: AZUL-CLARO\n");
+        led_set_color(135, 206, 250);
+    } else if (h < 310) {
         printf("COR DETECTADA: ROXO\n");
-    else
+        led_set_color(128, 0, 128);
+    } else if (h < 340) {
+        printf("COR DETECTADA: ROSA\n");
+        led_set_color(255, 105, 180);
+    } else {
         printf("COR DETECTADA: MAGENTA\n");
+        led_set_color(255, 0, 255);
+    }
+
 }
 
 // ---------- Programa principal ----------
@@ -81,7 +111,7 @@ int main() {
     while (1) {
         color_sensor_read(&data);
 
-        printf("RAW -> C:%-5u R:%-5u G:%-5u B:%-5u | ", data.c, data.r, data.g, data.b);
+        //printf("RAW -> C:%-5u R:%-5u G:%-5u B:%-5u | ", data.c, data.r, data.g, data.b);
 
         // --- Detecta preto com base na luminosidade total ---
         if (data.c < 300) { // Limiar ajustável conforme ambiente
@@ -99,9 +129,9 @@ int main() {
         uint8_t g8 = (uint8_t)fminf((data.g / c) * 255.0f, 255.0f);
         uint8_t b8 = (uint8_t)fminf((data.b / c) * 255.0f, 255.0f);
 
+        printf("RAW -> C:%-5u R:%-5u G:%-5u B:%-5u | ", data.c, r8, g8, b8);
         printf("HEX -> #%02X%02X%02X | ", r8, g8, b8);
 
-        led_set_color(r8, g8, b8);
         detectar_cor(r8, g8, b8);
 
         sleep_ms(1000);

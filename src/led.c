@@ -23,19 +23,19 @@ void led_init(void) {
 // Define a cor em intensidades (0–255)
 void led_set_color(uint8_t r, uint8_t g, uint8_t b) {
     // Converte 0–255 para nível PWM (0–65535)
-    //uint16_t r_level = (uint16_t)(r * 257); // 255*257 ≈ 65535
-    //uint16_t g_level = (uint16_t)(g * 257);
-    //uint16_t b_level = (uint16_t)(b * 257);
+    uint16_t r_level = (uint16_t)(r * 257); // 255*257 ≈ 65535
+    uint16_t g_level = (uint16_t)(g * 257);
+    uint16_t b_level = (uint16_t)(b * 257);
 
-    uint16_t r_level = (uint16_t)(r * 257 * LED_BRIGHTNESS);
-    uint16_t g_level = (uint16_t)(g * 257 * LED_BRIGHTNESS);
-    uint16_t b_level = (uint16_t)(b * 257 * LED_BRIGHTNESS);
+    //uint16_t r_level = (uint16_t)(r * 257 * LED_BRIGHTNESS);
+    //uint16_t g_level = (uint16_t)(g * 257 * LED_BRIGHTNESS);
+    //uint16_t b_level = (uint16_t)(b * 257 * LED_BRIGHTNESS);
     
-    //pwm_set_gpio_level(LED_R_PIN, r_level);
-    //pwm_set_gpio_level(LED_G_PIN, g_level);
-    //pwm_set_gpio_level(LED_B_PIN, b_level);
+    pwm_set_gpio_level(LED_R_PIN, r_level);
+    pwm_set_gpio_level(LED_G_PIN, g_level);
+    pwm_set_gpio_level(LED_B_PIN, b_level);
 
-    pwm_set_gpio_level(LED_R_PIN, 65535 - r_level);
-    pwm_set_gpio_level(LED_G_PIN, 65535 - g_level);
-    pwm_set_gpio_level(LED_B_PIN, 65535 - b_level);
+    //pwm_set_gpio_level(LED_R_PIN, 65535 - r_level);
+    //pwm_set_gpio_level(LED_G_PIN, 65535 - g_level);
+    //pwm_set_gpio_level(LED_B_PIN, 65535 - b_level);
 }
