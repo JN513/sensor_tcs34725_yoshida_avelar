@@ -41,15 +41,16 @@
 | SDL         | GPIO1 | I2C0 SDL |            |
 
 ## 3. Dependências
-- MicroPython/C versão:
-- Bibliotecas utilizadas:
-- Como instalar (passo a passo):
+
+- Pico SDK: v2.2.0
+- Micropython: a467762
+- Picotool: v2.2.0
+- Bibliotecas utilizadas: hardware_i2c e hardware_pwm 
+- Como instalar: Disponivel em [INSTALL.md](INSTALL.md)
 
 ## 4. Como executar
-```bash
-# MicroPython (Thonny): copiar src/main.py para a placa e rodar
-# C (Pico SDK): ver docs/compilacao.md
-```
+
+Disponivel em [docs/run.md](docs/run.md)
 
 ## 5. Exemplos de uso
 - `src/exemplo_basico.py` — leitura bruta  
