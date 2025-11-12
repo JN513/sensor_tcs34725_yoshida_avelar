@@ -135,8 +135,8 @@ Os testes foram realizados sob iluminação branca ambiente. O sistema foi capaz
 
 **Registro experimental:**
 
-* **Montagem:** ![Montagem](/imgs/monstagem.jpg)
-* **Saída no terminal:** ![Saída](/imgs/saida.jpg)
+* **Montagem:** ![Montagem](/imgs/montagem.png)
+* **Saída no terminal:** ![Saída](/imgs/saida.png)
 
 ---
 
