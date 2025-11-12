@@ -6,180 +6,195 @@
 \usepackage{amsmath}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
 
 % ---------------------------------------------------------------
-% Cabeçalho e informações da dupla
+% Cabeçalho e informações
 % ---------------------------------------------------------------
-
-\title{Relatório Experimental — Sensor de Cor GY-33 (TCS34725)}
+\title{Relatório Técnico — Sensor de Cor GY-33 (TCS34725)}
 \author{
 Ana Beatriz Barbosa Yoshida — RA: 245609 — \texttt{@beatrizbarbosay} \\
-Julio Nunes Avelar — RA: 241163 — \texttt{@JN513}
+Julio Nunes Avelar — RA: 241163 — \texttt{@JN513} \\
+Turma EA701 — 2025S2
 }
-\date{5 de Novembro de 2025}
+\date{11 de Novembro de 2025}
 
 \begin{document}
 \maketitle
 
-%\begin{center}
-%\includegraphics[width=0.6\textwidth]{docs/ligacao.jpg}\\[4pt]
-%\textit{Figura: Ligação do sensor GY-33 TCS34725 à placa BitDogLab.}
-%\end{center}
+\begin{center}
+\textbf{Repositório:} \url{https://github.com/JN513/sensor_tcs34725_yoshida_avelar}
+\end{center}
 
-% ---------------------------------------------------------------
-% 1. Escopo e Objetivos
 % ---------------------------------------------------------------
 \section{Escopo e Objetivos}
-
-O objetivo deste experimento é desenvolver um sistema embarcado capaz de detectar e identificar cores com o sensor GY-33 (TCS34725). 
-
-O projeto foi realizado em linguagem \textbf{C/C++} com o \textbf{Pico SDK}, explorando comunicação digital via \textbf{I²C} e controle de brilho por hardware PWM.
+O presente experimento teve como objetivo desenvolver um sistema embarcado capaz de detectar e identificar cores utilizando o sensor óptico \textbf{GY-33 (TCS34725)} acoplado à placa \textbf{BitDogLab}. 
+O projeto foi implementado em linguagem \textbf{C/C++} utilizando o \textbf{Pico SDK}, explorando os recursos de comunicação digital \textbf{I2C} e controle de brilho via \textbf{PWM por hardware} do microcontrolador \textbf{RP2040}.
 
 Os principais objetivos técnicos foram:
 \begin{itemize}
-    \item Implementar comunicação I²C com o sensor TCS34725;
-    \item Calibrar a leitura dos canais \texttt{R}, \texttt{G}, \texttt{B} e \texttt{C} (clear);
-    \item Converter os valores normalizados para o formato RGB (0–255);
+    \item Implementar comunicação I2C com o sensor TCS34725;
+    \item Calibrar e ler os canais de cor (\texttt{R}, \texttt{G}, \texttt{B} e \texttt{C});
+    \item Converter os valores normalizados para os formatos RGB (0–255) e HSV;
     \item Controlar o LED RGB da BitDogLab via PWM;
-    \item Realizar classificação automática da cor dominante detectada.
+    \item Classificar a cor dominante de acordo com faixas de matiz (Hue);
+    \item Reproduzir a cor detectada no LED RGB, garantindo coerência visual.
 \end{itemize}
 
-O sistema é considerado funcional quando o LED reproduz de forma coerente a cor detectada e a classificação textual coincide com a cor observada visualmente.
+O sistema foi considerado funcional quando a cor reproduzida pelo LED correspondia à cor observada no objeto e a classificação textual coincidiu com o esperado.
 
-% ---------------------------------------------------------------
-% 2. Metodologia e Implementação
 % ---------------------------------------------------------------
 \section{Metodologia e Implementação}
 
 \subsection{Arquitetura do Sistema}
 O sistema é composto por dois módulos principais:
+
 \begin{enumerate}
-    \item \textbf{Sensor de cor (GY-33 / TCS34725)} — responsável por capturar a intensidade de luz refletida nos canais vermelho, verde, azul e claro, comunicando-se com o microcontrolador via I²C.
-    \item \textbf{LED RGB da BitDogLab} — utilizado para reproduzir a cor detectada por meio de três canais PWM independentes (R, G e B).
+    \item \textbf{Sensor de cor (GY-33 / TCS34725)} — responsável pela leitura das intensidades de luz refletida nos canais vermelho, verde, azul e claro, comunicando-se com o microcontrolador via I2C.
+    \item \textbf{LED RGB da BitDogLab} — reproduz a cor detectada por meio de três canais PWM independentes (R, G e B).
 \end{enumerate}
 
-\subsection{Ligações Elétricas}
+\begin{center}
+\begin{verbatim}
++------------------+       +----------------+       +-----------------+
+|    TCS34725      | <---> |   BitDogLab    | --->  | LED RGB PWM     |
+|  Sensor de cor   |  I2C  |  RP2040 MCU    |  RGB  | Saídas R,G,B    |
++------------------+       +----------------+       +-----------------+
+\end{verbatim}
+\end{center}
 
+\subsection{Ligações Elétricas}
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
 \textbf{Pino Sensor} & \textbf{GPIO BitDogLab} & \textbf{Função} & \textbf{Observação} \\
 \hline
 VCC & 3.3V & Alimentação & Compatível 3.3V–5V \\
-GND & GND & Terra comum & --- \\
-SDA & GPIO0 & I²C0 SDA & Pino de dados \\
-SCL & GPIO1 & I²C0 SCL & Pino de clock \\
+GND & GND & Terra comum & — \\
+SDA & GPIO0 & I2C0 SDA & Dados \\
+SCL & GPIO1 & I2C0 SCL & Clock \\
 \hline
 \end{tabular}
 \end{center}
 
-O LED RGB da BitDogLab foi conectado aos pinos:
+O LED RGB integrado à BitDogLab utiliza os pinos:
 \begin{center}
-R = GPIO13,\quad G = GPIO11,\quad B = GPIO12.
+R = GPIO13, \quad G = GPIO11, \quad B = GPIO12
 \end{center}
-O LED é de \textbf{ânodo comum}, portanto o controle é feito com PWM invertido (nível lógico baixo = maior brilho).
+Ajustes de brilho foram necessários para evitar mistura excessiva de branco.
 
 \subsection{Desenvolvimento de Software}
-
-O projeto foi desenvolvido utilizando:
+O firmware foi desenvolvido utilizando o \textbf{Pico SDK v2.2.0}, com as seguintes bibliotecas:
 \begin{itemize}
-    \item \textbf{Pico SDK v2.2.0};
     \item \texttt{hardware\_i2c.h} — comunicação com o sensor;
     \item \texttt{hardware\_pwm.h} — controle do LED RGB;
-    \item \texttt{stdio.h} e \texttt{pico/stdlib.h} — funções de debug e temporização.
+    \item \texttt{pico/stdlib.h} e \texttt{stdio.h} — depuração e temporização.
 \end{itemize}
 
-O programa principal realiza o seguinte fluxo lógico:
+\textbf{Fluxo lógico do programa:}
 \begin{enumerate}
-    \item Inicializa comunicação serial e periféricos (I²C e PWM);
-    \item Lê os valores de cor (\texttt{R}, \texttt{G}, \texttt{B}, \texttt{C}) do sensor;
-    \item Normaliza os valores para 0–255 considerando o canal clear;
-    \item Atualiza o LED RGB com as intensidades correspondentes;
-    \item Classifica a cor dominante usando conversão RGB→HSV.
+    \item Inicializa periféricos (UART, I2C e PWM);
+    \item Lê valores dos canais \texttt{R}, \texttt{G}, \texttt{B} e \texttt{C};
+    \item Normaliza os dados com base no canal “clear”;
+    \item Converte os valores RGB para HSV;
+    \item Classifica a cor dominante de acordo com o matiz (Hue);
+    \item Atualiza o LED RGB via PWM;
+    \item Exibe no terminal a cor detectada e seu matiz.
 \end{enumerate}
 
-\subsection{Conversão RGB→HSV e Classificação de Cores}
-
-Foi implementado um algoritmo de conversão RGB→HSV para permitir a detecção de cores de forma perceptiva.  
-A classificação foi feita com base no valor de matiz (Hue) e saturação (S), conforme faixas:
+\subsection{Conversão RGB-->HSV e Classificação de Cores}
+Foi implementado um algoritmo de conversão RGB-->HSV para detecção perceptiva de cores.  
+A classificação foi baseada em faixas de matiz (Hue):
 
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
 \textbf{Faixa de Hue (°)} & \textbf{Cor Dominante} \\
 \hline
-0–15 ou $>$ 345 & Vermelho \\
+0–15 ou $>$345 & Vermelho \\
 15–45 & Laranja \\
 45–70 & Amarelo \\
 70–160 & Verde \\
-160–260 & Azul \\
+160–200 & Ciano \\
+200–260 & Azul \\
 260–320 & Roxo \\
 320–345 & Magenta \\
 \hline
 \end{tabular}
 \end{center}
 
+As faixas foram ajustadas empiricamente para melhorar a distinção entre tons intermediários.
+
 \subsection{Controle PWM do LED RGB}
+Cada canal foi configurado com frequência de 1 kHz e resolução de 16 bits.  
+Os valores normalizados (0–255) são convertidos em \emph{duty cycle} proporcional, invertido devido ao LED de ânodo comum.  
+Foi realizada calibração manual para equilibrar o brilho entre canais.
 
-Cada canal do LED foi configurado com frequência de 1 kHz e resolução de 16 bits.  
-A intensidade de cada canal é ajustada de forma proporcional ao valor de cor normalizado (0–255), aplicando inversão de duty cycle devido ao LED ser de ânodo comum.
-
-% ---------------------------------------------------------------
-% 3. Resultados e Análise
 % ---------------------------------------------------------------
 \section{Resultados e Análise}
+Os testes foram conduzidos sob iluminação branca ambiente.  
+O sistema foi capaz de identificar e reproduzir as cores principais com boa correspondência entre leitura e exibição.
 
-Durante os testes, o sensor apresentou respostas coerentes sob iluminação ambiente controlada.  
-O sistema foi capaz de detectar cores básicas (vermelho, verde, azul, branco e cinza) com boa estabilidade.
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Cor Observada} & \textbf{Hue (°)} & \textbf{Cor Detectada} & \textbf{RGB Reproduzido} \\
+\hline
+Garrafinha vermelha & $\sim$5 & Vermelho & (255, 0, 0) \\
+Camisa verde & $\sim$130 & Verde & (0, 255, 0) \\
+Camisa azul & $\sim$230 & Azul & (0, 0, 255) \\
+Garrafinha amarela & $\sim$55 & Amarelo & (255, 255, 0) \\
+Mesa branca & — & Branco/Cinza & (255, 255, 255) \\
+\hline
+\end{tabular}
+\end{center}
 
+\textbf{Observações:}
 \begin{itemize}
-    \item A calibração do limiar de luminosidade foi necessária para distinguir preto de ausência de luz.
-    \item A conversão RGB→HSV permitiu uma classificação mais robusta, mesmo com variação de brilho.
-    \item O LED RGB reproduziu adequadamente as cores detectadas, embora com tendência a tons esbranquiçados devido à mistura óptica dos canais.
+    \item Em tons claros, o LED tende ao branco ou cinza;
+    \item A detecção de preto exigiu limiar mínimo no canal “clear”.
 \end{itemize}
 
 %\begin{center}
-%\includegraphics[width=0.7\textwidth]{docs/teste_cores.jpg}\\
-%\textit{Figura: Testes de reprodução de cores com o LED RGB.}
+%\includegraphics[width=0.7\textwidth]{imgs/monstagem.jpg}\\
+%\textit{Figura: Montagem do sistema na BitDogLab.}
+%\end{center}
+
+%\begin{center}
+%\includegraphics[width=0.7\textwidth]{imgs/saida.jpg}\\
+%\textit{Figura: Saída no terminal durante o teste.}
 %\end{center}
 
 % ---------------------------------------------------------------
-% 4. Dificuldades e Soluções
-% ---------------------------------------------------------------
 \section{Dificuldades e Soluções}
-
 \begin{itemize}
-    \item \textbf{Brilho excessivo do LED RGB:} devido ao ânodo comum, foi necessário inverter o sinal PWM e ajustar o duty cycle para evitar saturação branca.
-    \item \textbf{Ruído nas leituras:} valores instáveis em ambientes muito iluminados; mitigado com média móvel simples.
-    \item \textbf{Detecção do preto:} o valor “clear” nunca era exatamente zero; foi adotado limiar (\texttt{C < 500}) para identificar ausência de luz.
-    \item \textbf{Equilíbrio entre canais:} calibração empírica foi feita para compensar maior sensibilidade do canal verde.
+    \item \textbf{Brilho excessivo no LED RGB:} calibração de brilho para evitar saturação branca.
+    \item \textbf{Limites imprecisos entre cores próximas:} ampliação das faixas de Hue.
+    \item \textbf{Influência da iluminação ambiente:} padronização da luz de teste.
+    \item \textbf{Sensibilidade desigual dos canais RGB:} compensação manual de ganho (redução no canal verde).
 \end{itemize}
 
-% ---------------------------------------------------------------
-% 5. Conclusões e Trabalhos Futuros
 % ---------------------------------------------------------------
 \section{Conclusões e Trabalhos Futuros}
+O projeto alcançou os objetivos propostos, demonstrando o funcionamento correto do sensor TCS34725 na detecção de cores.  
+A integração entre leitura I2C, conversão HSV e controle PWM resultou em um sistema eficiente, didático e de boa responsividade.
 
-O projeto atendeu aos objetivos propostos, demonstrando o funcionamento correto do sensor TCS34725.  
-O sistema consegue identificar e reproduzir as principais cores do espectro visível, com boa correspondência entre leitura e saída.
-
-Como aprimoramentos futuros, propõe-se:
+\textbf{Trabalhos futuros sugeridos:}
 \begin{itemize}
-    \item Implementar calibração automática baseada em referência branca;
+    \item Implementar calibração automática com referência branca;
     \item Adicionar compensação de luminosidade ambiente (auto gain);
-    \item Integrar exibição da cor detectada no display OLED;
-    \item Expandir a lógica para reconhecimento de padrões ou classificação multicolor.
+    \item Integrar exibição da cor detectada em display OLED;
+    \item Expandir para reconhecimento de padrões multicoloridos;
 \end{itemize}
 
 % ---------------------------------------------------------------
-% 6. Referências
-% ---------------------------------------------------------------
 \section{Referências}
-
 \begin{itemize}
-    \item ams AG. \textit{TCS34725 Color Light-to-Digital Converter with IR Filter.} Datasheet. Disponível em: \url{https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf}
-    \item Raspberry Pi Foundation. \textit{Pico SDK — C/C++ Development Guide.}
-    \item Documentação oficial da BitDogLab — Especificações de hardware e mapeamento de GPIOs.
+    \item ams AG. \textit{TCS34725 Color Light-to-Digital Converter with IR Filter — Datasheet.} Disponível em: \url{https://cdn-shop.adafruit.com/datasheets/TCS34725.pdf}
+    \item Raspberry Pi Foundation. \textit{Pico SDK — C/C++ Development Guide.} Disponível em: \url{https://www.raspberrypi.com/documentation/microcontrollers/}
+    \item BitDogLab. \textit{Documentação de Hardware — Mapeamento de GPIOs e periféricos.}
+    \item Adafruit Industries. \textit{TCS34725 Color Sensor Guide.} Disponível em: \url{https://learn.adafruit.com/adafruit-color-sensors}
     \item Repositório do projeto: \url{https://github.com/JN513/sensor_tcs34725_yoshida_avelar}
 \end{itemize}
 
