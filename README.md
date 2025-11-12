@@ -66,11 +66,11 @@ Disponivel em [docs/run.md](docs/run.md)
 ---
 
 > **Checklist de entrega**
-> - [ ] README preenchido  
-> - [ ] Foto/diagrama em `docs/`  
-> - [ ] Código comentado em `src/`  
-> - [ ] Testes em `test/` com instruções  
-> - [ ] `relatorio.md` com lições aprendidas
+> - [x] README preenchido  
+> - [x] Foto/diagrama em `docs/`  
+> - [x] Código comentado em `src/`  
+> - [x] Testes em `test/` com instruções  
+> - [x] `relatorio.md` com lições aprendidas
 
 ##  8. Estrutura do Repositório
 
